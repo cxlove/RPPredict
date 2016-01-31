@@ -7,10 +7,12 @@
 > Created Time: 五  1/22 19:36:55 2016
 """
 import sys
+import pandas as pd
 
 import datahandler
 sys.path.insert(0, '..')
 import feature.decomposition as decomposition
+import utils.io as io
 sys.path.insert(0, '../..')
 import feature.splitvalue as split
 import model.evaluate as evaluate
@@ -22,10 +24,23 @@ if __name__ == '__main__' :
     validation = data[train_number:train_number+val_number,:]
     test = data[train_number+val_number:-unlabel_number,:]
     unlabel = data[-unlabel_number:,:]
-    print train.shape, validation.shape, test.shape, unlabel.shape
 
+    val_label = pd.read_csv ('../../data/val_cv_y.csv').y.values
+
+    io.store ([train, label, validation, val_label, test, unlabel], '../../data/data_standard')
     train, validation, test, unlabel = decomposition.gbdt_dimreduce_threshold (train, label, validation, test, unlabel)
-    train, validation, test, unlabel = split.split_continuum_value_tvt (train, validation, test, unlabel)
+    io.store ([train, label, validation, val_label, test, unlabel], '../../data/data_standard_decompose')
+    # train, validation, test, unlabel = split.split_continuum_value_tvt (train, validation, test, unlabel)
+    
+    train_data, train_label, validation_data, validation_label, test, unlabel = io.grab ('../../data/data_standard')
+    print 'training set:' , train_data.shape
+    print 'validation set: ' , validation_data.shape
+    print 'testing set', test.shape
+    print 'unlabel set', unlabel.shape
+
+    assert train_data.shape[0] == len (train_label)
+    assert validation_data.shape[0] == len (validation_label)
+
 
 
     """

@@ -34,10 +34,6 @@ def read_data () :
     label = pd.read_csv (ROOT + "/data/train_cv_y.csv")
     test = pd.read_csv (ROOT + "/data/test_x.csv")
     unlabel = pd.read_csv (ROOT + "/data/train_unlabeled.csv")
-    print train.shape
-    print val.shape
-    print test.shape
-    print unlabel.shape
     # train = pd.merge (train , label , on = 'uid')
     data = pd.concat ([train , val , test, unlabel], ignore_index = True)
     data.reset_index (inplace = True)
